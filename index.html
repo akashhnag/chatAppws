@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+
+    <style>
+        #name{           
+            height:20px;
+            margin-left: 10px;
+            width: 200px;
+        }
+        #submit{
+            margin-left: 20px;
+        }
+        
+        #controls{
+            margin-top: 10px;
+            width:800px;
+        }
+        #viewArea {
+            border: 1px solid black;
+            width:800px;
+            height:500px;
+            margin-top: 30px;
+        }
+        #sendButton{
+            margin-left: 280px;
+            margin-top: 10px;
+        }
+        #textarea{
+            margin-top: 10px;
+        }
+    </style>
+
+    <body>
+        <div id='nameDiv'>
+            Enter a Name:<input type='text' id='name'><button id='submit'>Submit</button>
+        </div>
+        <div id='controls'>
+            <div id='inputButton'>
+                <div>
+                    Enter your message:
+                </div>
+                
+                <!--<input type="text" id='message' style='width:350px;height:20px'>-->
+                <div id='textarea'>
+                    <textarea rows="4" cols="50" id='message'></textarea>
+                </div>
+                
+            </div>
+            <div id='sendButton'>
+                <button id='send'>Send</button>
+            </div>           
+        </div>
+
+        <div id='viewArea'>
+
+        </div>
+        
+
+        <script>
+            let socket = new WebSocket('ws://localhost:5001');            
+            let submit=document.getElementById('submit');           
+            let send=document.getElementById('send');           
+            send.disabled=true;
+            let name;
+            let viewArea=document.getElementById('viewArea');            
+            socket.onopen=()=>{ 
+                console.log('Socket connected');  
+
+                submit.addEventListener('click',()=>{
+                    send.disabled=false;
+                    name=document.getElementById('name').value;                    
+                    socket.send(JSON.stringify({type:'name',data:name}));
+                
+                })          
+                send.addEventListener('click',()=>{
+                    let message=document.getElementById('message').value;                   
+                    socket.send(JSON.stringify({type:'message',data:message,name:name}));  
+                    viewArea.innerHTML+='You: '+message+'<br>';                 
+                })
+            };
+
+            socket.onmessage=(event)=>{
+                console.log(event.data);
+                viewArea.innerHTML+=event.data+'<br>';    
+            }
+            
+        </script>
+    </body>
+</html>
