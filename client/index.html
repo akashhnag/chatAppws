@@ -69,12 +69,13 @@
             socket.onopen=()=>{ 
                 console.log('Socket connected');  
 
+                //submit action
                 submit.addEventListener('click',()=>{
                     send.disabled=false;
-                    name=document.getElementById('name').value;                    
-                    socket.send(JSON.stringify({type:'name',data:name}));
-                
-                })          
+                    name=document.getElementById('name').value;
+                }) 
+
+                //send action
                 send.addEventListener('click',()=>{
                     let message=document.getElementById('message').value;                   
                     socket.send(JSON.stringify({type:'message',data:message,name:name}));  
